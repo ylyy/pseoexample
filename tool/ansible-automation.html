@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansible 自动化改造 - 配置管理系统改造工具</title>
+    <meta name="description" content="使用 Ansible 进行内部系统改造，通过自动化配置管理实现系统改造的批量执行和标准化">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">内部系统改造框架</h1>
+            <nav class="main-nav">
+                <a href="/guide/">指南</a>
+                <a href="/tool/">工具</a>
+                <a href="/compare/">对比</a>
+                <a href="/live/">实战</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="/">首页</a> / <a href="/tool/">工具</a> / <span>Ansible 自动化</span>
+        </div>
+
+        <div class="page-content">
+            <h1>Ansible 自动化改造 - 配置管理系统改造工具</h1>
+            
+            <p>Ansible 是进行内部系统改造的强大自动化工具，通过声明式配置实现系统改造的批量执行和标准化。本文将详细介绍如何使用 Ansible 进行系统改造。</p>
+
+            <h2>为什么使用 Ansible 进行系统改造？</h2>
+            <p>Ansible 为内部系统改造提供了强大的自动化能力：</p>
+            <ul>
+                <li><strong>无代理架构：</strong>无需在目标系统安装代理</li>
+                <li><strong>幂等性：</strong>多次执行结果一致</li>
+                <li><strong>简单易用：</strong>YAML 格式，易于理解</li>
+                <li><strong>批量操作：</strong>同时管理多台服务器</li>
+            </ul>
+
+            <h2>Ansible 系统改造实战</h2>
+
+            <h3>1. 创建 Playbook</h3>
+            <p>创建 transformation.yml playbook：</p>
+            <pre><code># transformation.yml - 系统改造 Playbook
+---
+- name: 内部系统改造自动化
+  hosts: transformation_servers
+  become: yes
+  vars:
+    app_version: "2.0.0"
+    db_host: "db.example.com"
+    db_port: 5432
+
+  tasks:
+    # 任务1：更新系统包
+    - name: 更新系统包
+      package:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    # 任务2：安装 Docker
+    - name: 安装 Docker
+      package:
+        name:
+          - docker
+          - docker-compose
+        state: present
+
+    # 任务3: 启动 Docker 服务
+    - name: 启动并启用 Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    # 任务4：创建应用目录
+    - name: 创建应用目录
+      file:
+        path: "/opt/transformation-app"
+        state: directory
+        mode: '0755'
+        owner: appuser
+        group: appuser
+
+    # 任务5：复制应用文件
+    - name: 复制应用文件
+      copy:
+        src: "{{ item }}"
+        dest: "/opt/transformation-app/"
+        owner: appuser
+        group: appuser
+      loop:
+        - app.py
+        - requirements.txt
+        - config.ini
+
+    # 任务6：安装 Python 依赖
+    - name: 安装 Python 依赖
+      pip:
+        requirements: /opt/transformation-app/requirements.txt
+        virtualenv: /opt/transformation-app/venv
+
+    # 任务7：配置应用
+    - name: 配置应用
+      template:
+        src: config.ini.j2
+        dest: /opt/transformation-app/config.ini
+        owner: appuser
+        group: appuser
+      notify: restart app
+
+    # 任务8：部署 Docker 容器
+    - name: 部署应用容器
+      docker_container:
+        name: transformation-app
+        image: transformation-app:{{ app_version }}
+        state: started
+        restart_policy: always
+        ports:
+          - "8080:80"
+        env:
+          DB_HOST: "{{ db_host }}"
+          DB_PORT: "{{ db_port }}"
+        volumes:
+          - /opt/transformation-app:/app
+
+    # 任务9：验证服务状态
+    - name: 验证服务运行
+      uri:
+        url: "http://localhost:8080/health"
+        method: GET
+        status_code: 200
+      register: health_check
+      retries: 5
+      delay: 10
+
+    # 任务10：更新数据库架构
+    - name: 执行数据库迁移
+      command: /opt/transformation-app/venv/bin/python migrate.py
+      args:
+        chdir: /opt/transformation-app
+      environment:
+        DB_HOST: "{{ db_host }}"
+        DB_PORT: "{{ db_port }}"
+
+  handlers:
+    - name: restart app
+      systemd:
+        name: transformation-app
+        state: restarted</code></pre>
+
+            <h3>2. 定义主机清单</h3>
+            <p>创建 inventory.ini 定义目标服务器：</p>
+            <pre><code># inventory.ini
+[transformation_servers]
+web1.example.com ansible_host=192.168.1.10
+web2.example.com ansible_host=192.168.1.11
+web3.example.com ansible_host=192.168.1.12
+
+[transformation_servers:vars]
+ansible_user=admin
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_python_interpreter=/usr/bin/python3
+
+[database_servers]
+db1.example.com ansible_host=192.168.1.20
+
+[database_servers:vars]
+ansible_user=dbadmin</code></pre>
+
+            <h3>3. 创建配置模板</h3>
+            <p>创建 Jinja2 模板文件：</p>
+            <pre><code># templates/config.ini.j2
+[app]
+name = Transformation Application
+version = {{ app_version }}
+environment = {{ environment | default('production') }}
+
+[database]
+host = {{ db_host }}
+port = {{ db_port }}
+name = transformation_db
+user = {{ db_user }}
+password = {{ db_password }}
+
+[logging]
+level = {{ log_level | default('INFO') }}
+file = /var/log/transformation-app.log</code></pre>
+
+            <h3>4. 执行 Ansible Playbook</h3>
+            <p>运行改造任务：</p>
+            <pre><code># 测试连接
+ansible all -i inventory.ini -m ping
+
+# 查看执行计划（dry-run）
+ansible-playbook transformation.yml -i inventory.ini --check
+
+# 执行改造
+ansible-playbook transformation.yml -i inventory.ini
+
+# 指定特定主机组
+ansible-playbook transformation.yml -i inventory.ini --limit transformation_servers
+
+# 使用变量文件
+ansible-playbook transformation.yml -i inventory.ini -e @vars/production.yml
+
+# 详细输出
+ansible-playbook transformation.yml -i inventory.ini -v</code></pre>
+
+            <h2>Ansible 高级功能</h2>
+
+            <h3>1. 角色（Roles）组织</h3>
+            <p>使用角色组织复杂的改造任务：</p>
+            <pre><code># roles/web-server/tasks/main.yml
+- name: 安装 Web 服务器
+  package:
+    name: nginx
+    state: present
+
+- name: 配置 Nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx
+
+# 使用角色
+- hosts: web_servers
+  roles:
+    - web-server
+    - app-deployment</code></pre>
+
+            <h3>2. 条件执行</h3>
+            <p>根据条件执行任务：</p>
+            <pre><code>tasks:
+  - name: 仅在开发环境执行
+    command: /opt/scripts/dev-setup.sh
+    when: environment == "development"
+
+  - name: 检查文件是否存在
+    stat:
+      path: /opt/app/config.ini
+    register: config_file
+
+  - name: 创建配置文件
+    template:
+      src: config.ini.j2
+      dest: /opt/app/config.ini
+    when: not config_file.stat.exists</code></pre>
+
+            <h3>3. 错误处理</h3>
+            <p>处理任务执行错误：</p>
+            <pre><code>tasks:
+  - name: 可能失败的任务
+    command: /opt/scripts/risky-operation.sh
+    ignore_errors: yes
+    register: result
+
+  - name: 检查任务结果
+    debug:
+      msg: "任务执行失败，但继续执行"
+    when: result.rc != 0
+
+  - name: 重试任务
+    command: /opt/scripts/operation.sh
+    retries: 3
+    delay: 10
+    until: result.rc == 0</code></pre>
+
+            <h2>Ansible 实际应用案例</h2>
+
+            <h3>案例：批量服务器改造</h3>
+            <p>使用 Ansible 同时改造多台服务器：</p>
+            <pre><code>---
+- name: 批量系统改造
+  hosts: all
+  serial: 5  # 每次改造5台服务器
+  tasks:
+    - name: 备份当前配置
+      archive:
+        path: /etc
+        dest: /backup/config-{{ inventory_hostname }}.tar.gz
+
+    - name: 应用新配置
+      template:
+        src: "{{ item }}.j2"
+        dest: "/etc/{{ item }}"
+      loop:
+        - nginx.conf
+        - app.conf
+        - systemd.service
+
+    - name: 重启服务
+      systemd:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - nginx
+        - application</code></pre>
+
+            <h2>Ansible 工具的优势</h2>
+            <ul>
+                <li><strong>无代理：</strong>无需在目标系统安装代理程序</li>
+                <li><strong>幂等性：</strong>多次执行结果一致，安全可靠</li>
+                <li><strong>批量操作：</strong>同时管理大量服务器</li>
+                <li><strong>易于学习：</strong>YAML 格式，简单直观</li>
+            </ul>
+
+            <h2>相关资源</h2>
+            <p>继续学习：</p>
+            <ul>
+                <li><a href="/compare/terraform-vs-ansible" class="internal-link">Terraform vs Ansible</a> - 自动化工具对比</li>
+                <li><a href="/tool/terraform-infrastructure" class="internal-link">Terraform 基础设施</a> - 基础设施即代码</li>
+                <li><a href="/guide/automation-strategies" class="internal-link">自动化策略</a> - 自动化最佳实践</li>
+            </ul>
+
+            <p>想了解其他工具？查看 <a href="/tool/system-transformation-tools" class="internal-link">内部系统改造工具推荐</a>。需要实际案例？查看 <a href="/live/" class="internal-link">实战项目</a>。</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 内部系统改造框架. 专业改造解决方案中心。</p>
+        </div>
+    </footer>
+</body>
+</html>

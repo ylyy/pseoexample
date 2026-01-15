@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker 模拟环境生成 - 容器化系统改造工具</title>
+    <meta name="description" content="使用 Docker 进行内部系统改造的模拟环境生成，学习如何用 Docker 容器快速创建系统改造环境">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">内部系统改造框架</h1>
+            <nav class="main-nav">
+                <a href="/guide/">指南</a>
+                <a href="/tool/">工具</a>
+                <a href="/compare/">对比</a>
+                <a href="/live/">实战</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="/">首页</a> / <a href="/tool/">工具</a> / <span>Docker 模拟环境</span>
+        </div>
+
+        <div class="page-content">
+            <h1>Docker 模拟环境生成 - 容器化系统改造工具</h1>
+            
+            <p>Docker 是进行内部系统改造的强大工具，可以快速创建隔离的模拟环境。本文将详细介绍如何使用 Docker 进行系统改造的模拟环境生成。</p>
+
+            <h2>为什么使用 Docker 进行系统改造？</h2>
+            <p>Docker 容器化技术为内部系统改造提供了理想的模拟环境：</p>
+            <ul>
+                <li><strong>快速部署：</strong>秒级启动容器环境</li>
+                <li><strong>环境隔离：</strong>完全隔离的改造测试环境</li>
+                <li><strong>易于复制：</strong>一次配置，到处运行</li>
+                <li><strong>资源高效：</strong>轻量级容器，资源占用少</li>
+            </ul>
+
+            <h2>Docker 模拟环境生成实战</h2>
+
+            <h3>1. 创建 Dockerfile</h3>
+            <p>首先创建 Dockerfile 定义系统环境：</p>
+            <pre><code># Dockerfile 示例：系统改造模拟环境
+FROM ubuntu:22.04
+
+# 安装系统依赖
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    nginx \
+    postgresql \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制应用代码
+COPY ./app /app
+WORKDIR /app
+
+# 安装应用依赖
+RUN pip3 install -r requirements.txt
+
+# 配置环境变量
+ENV ENV_TYPE=simulation
+ENV TRANSFORMATION_MODE=test
+
+# 暴露端口
+EXPOSE 80 5432
+
+# 启动命令
+CMD ["python3", "app.py"]</code></pre>
+
+            <h3>2. 使用 Docker Compose 创建完整环境</h3>
+            <p>使用 docker-compose.yml 定义多容器环境：</p>
+            <pre><code># docker-compose.yml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - DB_HOST=db
+      - ENV_TYPE=simulation
+    depends_on:
+      - db
+    volumes:
+      - ./app:/app
+      - ./logs:/var/log/app
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=transformation_test
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_pass
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  db_data:</code></pre>
+
+            <h3>3. 快速启动模拟环境</h3>
+            <p>使用以下命令快速启动 Docker 模拟环境：</p>
+            <pre><code># 构建并启动环境
+docker-compose up -d
+
+# 查看运行状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f web
+
+# 进入容器进行交互
+docker-compose exec web bash</code></pre>
+
+            <h3>4. 在 Docker 环境中执行改造</h3>
+            <p>在容器环境中执行系统改造：</p>
+            <pre><code># 进入容器
+docker-compose exec web bash
+
+# 执行改造脚本
+python3 transformation_script.py
+
+# 验证改造结果
+curl http://localhost:80/api/health
+
+# 查看改造日志
+tail -f /var/log/app/transformation.log</code></pre>
+
+            <h2>Docker 模拟环境的高级用法</h2>
+
+            <h3>1. 多环境管理</h3>
+            <p>使用 Docker 标签管理多个改造环境：</p>
+            <pre><code># 创建不同版本的环境
+docker build -t system-env:v1.0 .
+docker build -t system-env:v2.0 .
+
+# 运行不同版本
+docker run -d --name env-v1 system-env:v1.0
+docker run -d --name env-v2 system-env:v2.0</code></pre>
+
+            <h3>2. 环境快照和回滚</h3>
+            <p>使用 Docker 镜像实现环境快照：</p>
+            <pre><code># 创建环境快照
+docker commit container-name system-env:snapshot-1
+
+# 回滚到快照
+docker stop container-name
+docker rm container-name
+docker run -d --name container-name system-env:snapshot-1</code></pre>
+
+            <h3>3. 网络隔离</h3>
+            <p>创建独立的 Docker 网络进行隔离测试：</p>
+            <pre><code># 创建隔离网络
+docker network create transformation-net
+
+# 在隔离网络中运行
+docker run -d --network transformation-net --name test-env system-env:latest</code></pre>
+
+            <h2>Docker 模拟环境的实际案例</h2>
+
+            <h3>案例：微服务系统改造</h3>
+            <p>使用 Docker Compose 模拟微服务环境：</p>
+            <pre><code>version: '3.8'
+services:
+  api-gateway:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    depends_on:
+      - user-service
+      - order-service
+
+  user-service:
+    build: ./services/user
+    environment:
+      - DB_HOST=user-db
+    depends_on:
+      - user-db
+
+  order-service:
+    build: ./services/order
+    environment:
+      - DB_HOST=order-db
+    depends_on:
+      - order-db
+
+  user-db:
+    image: postgres:15
+    volumes:
+      - user_data:/var/lib/postgresql/data
+
+  order-db:
+    image: postgres:15
+    volumes:
+      - order_data:/var/lib/postgresql/data
+
+volumes:
+  user_data:
+  order_data:</code></pre>
+
+            <h2>Docker 工具的优势</h2>
+            <ul>
+                <li><strong>标准化：</strong>统一的容器格式，易于管理</li>
+                <li><strong>可移植：</strong>在任何支持 Docker 的平台运行</li>
+                <li><strong>版本控制：</strong>通过镜像版本管理环境</li>
+                <li><strong>资源隔离：</strong>完全隔离的改造环境</li>
+            </ul>
+
+            <h2>相关资源</h2>
+            <p>继续学习：</p>
+            <ul>
+                <li><a href="/compare/docker-vs-kubernetes" class="internal-link">Docker vs Kubernetes</a> - 容器工具对比</li>
+                <li><a href="/tool/env-generator" class="internal-link">环境生成器</a> - 通用环境生成工具</li>
+                <li><a href="/guide/environment-configuration" class="internal-link">环境配置指南</a> - 环境配置最佳实践</li>
+            </ul>
+
+            <p>想了解其他工具？查看 <a href="/tool/system-transformation-tools" class="internal-link">内部系统改造工具推荐</a>。需要实际案例？查看 <a href="/live/" class="internal-link">实战项目</a>。</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 内部系统改造框架. 专业改造解决方案中心。</p>
+        </div>
+    </footer>
+</body>
+</html>
