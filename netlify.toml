@@ -1,0 +1,30 @@
+# Netlify 自动部署配置文件
+# Netlify 会自动读取这个文件进行配置
+
+[build]
+  # 发布目录（Netlify 会部署这个文件夹的内容）
+  publish = "public"
+  
+  # 构建命令（创建 public 文件夹并复制所有文件）
+  command = """
+    mkdir -p public &&
+    cp -r *.html public/ 2>/dev/null || true &&
+    cp -r lab guide tool compare live public/ 2>/dev/null || true &&
+    cp -r assets public/ 2>/dev/null || true &&
+    cp robots.txt sitemap.xml public/ 2>/dev/null || true &&
+    echo "✅ 构建完成！"
+  """
+
+# 处理 HTML 文件的路由
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# 自定义头部（可选）
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
