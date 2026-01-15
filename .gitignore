@@ -3,5 +3,5 @@ node_modules/
 *.log
 .idea/
 .vscode/
-readme.md
+README.md
 PSEO_STRATEGY.md
