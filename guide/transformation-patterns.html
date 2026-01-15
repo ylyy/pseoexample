@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>改造模式 - 常见改造模式指南</title>
+    <meta name="description" content="学习内部系统改造的常见模式和最佳实践">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">内部系统改造框架</h1>
+            <nav class="main-nav">
+                <a href="/guide/">指南</a>
+                <a href="/tool/">工具</a>
+                <a href="/compare/">对比</a>
+                <a href="/live/">实战</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="/">首页</a> / <a href="/guide/">指南</a> / <span>改造模式</span>
+        </div>
+
+        <div class="page-content">
+            <h1>改造模式</h1>
+            
+            <p>了解常见的系统改造模式，可以帮助你快速识别改造场景并选择合适的方案。</p>
+
+            <h2>核心改造模式</h2>
+
+            <h3>1. 渐进式改造 (Incremental Transformation)</h3>
+            <p>逐步改造系统，每次改造一小部分：</p>
+            <pre><code>模式特点：
+- 低风险
+- 可随时回滚
+- 适合大型系统
+- 改造周期较长</code></pre>
+
+            <h3>2. 大爆炸式改造 (Big Bang Transformation)</h3>
+            <p>一次性完成所有改造：</p>
+            <pre><code>模式特点：
+- 改造速度快
+- 风险较高
+- 需要充分准备
+- 适合小型系统</code></pre>
+
+            <h3>3. 并行改造 (Parallel Transformation)</h3>
+            <p>在模拟环境中改造的同时保持原系统运行：</p>
+            <pre><code>模式特点：
+- 零停机时间
+- 风险可控
+- 需要资源较多
+- 适合关键系统</code></pre>
+
+            <h3>4. 分阶段改造 (Phased Transformation)</h3>
+            <p>按阶段逐步推进改造：</p>
+            <ul>
+                <li>阶段一：基础设施改造</li>
+                <li>阶段二：核心功能改造</li>
+                <li>阶段三：扩展功能改造</li>
+                <li>阶段四：优化和收尾</li>
+            </ul>
+
+            <h2>选择模式的原则</h2>
+            <ul>
+                <li><strong>系统规模：</strong>大型系统适合渐进式</li>
+                <li><strong>业务连续性：</strong>关键系统适合并行改造</li>
+                <li><strong>时间要求：</strong>紧急情况考虑大爆炸式</li>
+                <li><strong>资源限制：</strong>资源充足可考虑并行改造</li>
+            </ul>
+
+            <h2>模式组合</h2>
+            <p>实际项目中可以组合使用多种模式：</p>
+            <pre><code>示例：分阶段 + 渐进式
+阶段一：渐进式改造基础设施
+阶段二：并行改造核心功能
+阶段三：渐进式改造扩展功能</code></pre>
+
+            <h2>相关资源</h2>
+            <p>了解更多：</p>
+            <ul>
+                <li><a href="/guide/individual-transformation" class="internal-link">个体快速改造策略</a></li>
+                <li><a href="/guide/advanced-techniques" class="internal-link">高级技巧</a></li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 内部系统改造框架. 专业改造解决方案中心。</p>
+        </div>
+    </footer>
+</body>
+</html>

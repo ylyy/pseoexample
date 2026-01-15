@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>环境生成器 - 快速生成模拟环境</title>
+    <meta name="description" content="环境生成器使用指南，学习如何快速生成和配置模拟环境">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">内部系统改造框架</h1>
+            <nav class="main-nav">
+                <a href="/guide/">指南</a>
+                <a href="/tool/">工具</a>
+                <a href="/compare/">对比</a>
+                <a href="/live/">实战</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="/">首页</a> / <a href="/tool/">工具</a> / <span>环境生成器</span>
+        </div>
+
+        <div class="page-content">
+            <h1>环境生成器</h1>
+            
+            <p>环境生成器是内部系统改造框架的核心工具，用于快速生成和配置模拟环境。它可以将真实系统快速镜像到模拟环境中，为改造提供安全可靠的测试平台。</p>
+
+            <h2>快速开始</h2>
+            <pre><code># 安装环境生成器
+npm install -g env-generator
+
+# 初始化环境
+env-generator init my-system
+
+# 连接到源系统
+env-generator connect --source=production
+
+# 生成模拟环境
+env-generator generate --fidelity=high</code></pre>
+
+            <h2>主要功能</h2>
+
+            <h3>1. 自动系统分析</h3>
+            <p>自动分析源系统结构，识别关键组件和依赖关系。</p>
+
+            <h3>2. 智能环境生成</h3>
+            <p>根据分析结果智能生成模拟环境，包括：</p>
+            <ul>
+                <li>系统架构复制</li>
+                <li>数据模型映射</li>
+                <li>接口模拟</li>
+                <li>状态同步配置</li>
+            </ul>
+
+            <h3>3. 配置管理</h3>
+            <p>提供灵活的配置选项：</p>
+            <pre><code>env-generator configure \
+  --fidelity=high \
+  --data-volume=representative \
+  --performance-mode=optimized \
+  --auto-sync=enabled</code></pre>
+
+            <h3>4. 环境验证</h3>
+            <p>自动验证生成的环境：</p>
+            <pre><code>env-generator validate
+# 检查环境完整性
+# 验证数据一致性
+# 测试接口可用性</code></pre>
+
+            <h2>高级功能</h2>
+
+            <h3>增量更新</h3>
+            <p>支持增量更新环境，只同步变化部分：</p>
+            <pre><code>env-generator update --incremental</code></pre>
+
+            <h3>多环境管理</h3>
+            <p>管理多个模拟环境：</p>
+            <pre><code>env-generator list
+env-generator switch environment-name
+env-generator clone source-env target-env</code></pre>
+
+            <h2>使用技巧</h2>
+            <ul>
+                <li>使用模板快速生成标准环境</li>
+                <li>定期更新环境保持同步</li>
+                <li>使用验证功能确保环境质量</li>
+                <li>保存环境快照便于回滚</li>
+            </ul>
+
+            <h2>相关资源</h2>
+            <p>了解更多：</p>
+            <ul>
+                <li><a href="/guide/getting-started" class="internal-link">快速入门指南</a></li>
+                <li><a href="/guide/environment-configuration" class="internal-link">环境配置指南</a></li>
+            </ul>
+
+            <p>想了解其他工具？查看 <a href="/compare/" class="internal-link">工具对比</a>。需要实战案例？查看 <a href="/live/" class="internal-link">实战项目</a>。</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 内部系统改造框架. 专业改造解决方案中心。</p>
+        </div>
+    </footer>
+</body>
+</html>
