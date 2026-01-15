@@ -1,16 +1,39 @@
+# ============================================
+# GitLab Pages 自动部署配置文件
+# ============================================
+# 这个文件告诉 GitLab 如何部署你的网站
+# 当你推送代码时，GitLab 会自动运行这里的命令
+
+# 使用 Alpine Linux 作为运行环境（轻量级）
 image: alpine:latest
 
+# 定义部署任务
 pages:
   stage: deploy
+  
+  # 执行的命令（按顺序执行）
   script:
+    # 1. 创建 public 文件夹（GitLab Pages 会部署这个文件夹的内容）
     - mkdir -p public
+    
+    # 2. 复制所有 HTML 文件到 public 文件夹
     - cp -r *.html public/ 2>/dev/null || true
+    
+    # 3. 复制各个目录（lab, guide, tool, compare, live）到 public
     - cp -r lab guide tool compare live public/ 2>/dev/null || true
+    
+    # 4. 复制 CSS 样式文件到 public
     - cp -r assets public/ 2>/dev/null || true
+    
+    # 5. 复制 SEO 相关文件（robots.txt, sitemap.xml）
     - cp robots.txt sitemap.xml public/ 2>/dev/null || true
+  
+  # 告诉 GitLab 部署 public 文件夹的内容
   artifacts:
     paths:
       - public
+  
+  # 只在 main 或 master 分支推送时触发部署
   only:
     - main
     - master
