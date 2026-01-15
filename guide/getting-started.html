@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React 入门指南 - 从零开始学习</title>
+    <meta name="description" content="React 入门教程，学习 React 基础概念、组件、JSX 和核心特性">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">React 学习中心</h1>
+            <nav class="main-nav">
+                <a href="/guide/">指南</a>
+                <a href="/tool/">工具</a>
+                <a href="/compare/">对比</a>
+                <a href="/live/">实战</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="/">首页</a> / <a href="/guide/">指南</a> / <span>入门指南</span>
+        </div>
+
+        <div class="page-content">
+            <h1>React 入门指南</h1>
+            
+            <p>React 是一个用于构建用户界面的 JavaScript 库，由 Facebook 开发并维护。它采用组件化开发模式，让构建复杂的 UI 变得简单高效。</p>
+
+            <h2>什么是 React？</h2>
+            <p>React 是一个声明式、高效且灵活的 JavaScript 库，用于构建用户界面。它让你可以通过组合小的、可复用的组件来构建复杂的应用。</p>
+
+            <h2>核心概念</h2>
+            
+            <h3>1. 组件 (Components)</h3>
+            <p>组件是 React 应用的基本构建块。每个组件都是一个独立的、可复用的代码单元。</p>
+            <pre><code>function Welcome(props) {
+  return &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;;
+}</code></pre>
+
+            <h3>2. JSX</h3>
+            <p>JSX 是 JavaScript 的语法扩展，让你可以在 JavaScript 中编写类似 HTML 的代码。</p>
+            <pre><code>const element = &lt;h1&gt;Hello, World!&lt;/h1&gt;;</code></pre>
+
+            <h3>3. Props</h3>
+            <p>Props（属性）是组件之间传递数据的方式，类似于函数的参数。</p>
+
+            <h3>4. State</h3>
+            <p>State 是组件内部的数据，当 state 改变时，组件会重新渲染。</p>
+
+            <h2>开始使用</h2>
+            <p>最简单的开始方式是使用 Create React App：</p>
+            <pre><code>npx create-react-app my-app
+cd my-app
+npm start</code></pre>
+
+            <h2>下一步</h2>
+            <p>掌握了基础概念后，建议学习：</p>
+            <ul>
+                <li><a href="/guide/hooks" class="internal-link">React Hooks 详解</a> - 现代 React 开发的核心</li>
+                <li><a href="/guide/state-management" class="internal-link">状态管理最佳实践</a> - 管理复杂应用状态</li>
+            </ul>
+
+            <p>需要开发工具？查看 <a href="/tool/react-devtools" class="internal-link">React DevTools</a>。想了解 React 与其他框架的对比？查看 <a href="/compare/react-vs-vue" class="internal-link">React vs Vue</a>。</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 React Learning Hub. 专业学习资源中心。</p>
+        </div>
+    </footer>
+</body>
+</html>

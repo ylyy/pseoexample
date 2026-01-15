@@ -1,0 +1,16 @@
+image: alpine:latest
+
+pages:
+  stage: deploy
+  script:
+    - mkdir -p public
+    - cp -r *.html public/ 2>/dev/null || true
+    - cp -r lab guide tool compare live public/ 2>/dev/null || true
+    - cp -r assets public/ 2>/dev/null || true
+    - cp robots.txt sitemap.xml public/ 2>/dev/null || true
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+    - master
