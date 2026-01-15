@@ -1,54 +1,40 @@
 # 部署指南
 
-## GitLab Pages 部署步骤
+## Netlify 自动部署（推荐）
 
-### 1. 创建 GitLab 仓库
+### 快速部署步骤
 
-1. 登录 GitLab
-2. 创建新项目（Project）
-3. 复制仓库 URL
+1. **访问 Netlify**
+   - 打开：https://www.netlify.com/
+   - 使用 GitHub 账号登录（最简单）
 
-### 2. 初始化 Git 并推送
+2. **连接 Git 仓库**
+   - 点击 "Add new site" → "Import an existing project"
+   - 选择 GitHub 或 GitLab
+   - 选择你的仓库
+   - Netlify 会自动检测 `netlify.toml` 配置
 
+3. **完成部署**
+   - 点击 "Deploy site"
+   - 等待 1-2 分钟
+   - 网站自动上线！
+
+### 自动部署
+
+设置完成后，以后只需要：
 ```bash
-# 初始化 Git 仓库
-git init
-
-# 添加远程仓库（替换为你的 GitLab 仓库 URL）
-git remote add origin https://gitlab.com/your-username/pseoexample.git
-
-# 添加所有文件
 git add .
-
-# 提交
-git commit -m "Initial commit: React learning hub with PSEO strategy"
-
-# 推送到 GitLab
-git push -u origin main
+git commit -m "更新内容"
+git push
 ```
 
-### 3. 配置 GitLab Pages
+Netlify 会自动检测变化并部署，完全不需要手动操作！
 
-1. 进入项目设置（Settings）
-2. 找到 Pages 设置
-3. 选择部署分支（main 或 master）
-4. 等待 CI/CD 管道完成
+### 详细步骤
 
-### 4. 访问网站
+查看 `Netlify自动部署设置.md` 获取完整设置说明。
 
-部署完成后，网站将在以下地址可用：
-```
-https://your-username.gitlab.io/pseoexample/
-```
-
-### 5. 更新 sitemap.xml
-
-部署后，记得更新 `sitemap.xml` 中的域名：
-- 将 `your-username.gitlab.io` 替换为你的实际 GitLab Pages 域名
-
-### 6. 更新 robots.txt
-
-同样更新 `robots.txt` 中的 sitemap URL。
+---
 
 ## 内链策略说明
 

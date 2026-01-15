@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /guide/
+Allow: /tool/
+Allow: /compare/
+Allow: /live/
+
+# 实验区可以索引，但标记为实验性
+Allow: /lab/
+
+Sitemap: https://your-username.gitlab.io/pseoexample/sitemap.xml
